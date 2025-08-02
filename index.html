@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shafin - Web Developer & Webflow Specialist</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Starts Here */
+
+        /* Root Variables for New Blue Color Palette */
+        :root {
+            --bg-color: #F0F8FF; /* AliceBlue, a very pale blue */
+            --text-color: #023E8A; /* Dark Blue */
+            --primary-color: #0077B6; /* Medium Blue */
+            --secondary-color: #90E0EF; /* Light Blue */
+            --pale-blue: #CAF0F8;
+            --card-bg: rgba(255, 255, 255, 0.6); /* Semi-transparent WHITE for better contrast */
+            --shadow: rgba(2, 62, 138, 0.08);
+            --border-color: rgba(255, 255, 255, 0.8);
+            --glow-color: rgba(0, 119, 182, 0.3);
+        }
+
+        /* General Styling & Modern Font */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            cursor: none; /* Hide default cursor */
+        }
+        
+        body.mobile-nav-open {
+            overflow: hidden; /* Prevent scrolling when mobile nav is open */
+        }
+
+        /* Hide default cursor for interactive elements */
+        a, button, input, textarea {
+            cursor: none;
+        }
+
+        /* Custom Animated Arrow Cursor */
+        .custom-cursor {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .custom-cursor svg {
+            width: 100%;
+            height: 100%;
+            fill: var(--primary-color);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        /* Hover state for the cursor */
+        .custom-cursor.hover svg {
+            transform: scale(1.4) rotate(45deg);
+        }
+
+
+        /* Animated Background Canvas */
+        #background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Modern Floating Navigation Bar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 2rem;
+            position: fixed;
+            width: calc(100% - 4rem);
+            max-width: 600px;
+            top: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background-color: var(--card-bg); 
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            box-shadow: 0 8px 32px 0 var(--shadow);
+            transition: top 0.3s ease;
+        }
+
+        .nav-logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Hamburger Menu for Mobile */
+        .hamburger-menu {
+            display: none; /* Hidden by default */
+            width: 30px;
+            height: 22px;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .hamburger-menu span {
+            width: 100%;
+            height: 3px;
+            background-color: var(--text-color);
+            border-radius: 3px;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        /* Mobile Nav Overlay */
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(240, 248, 255, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        .mobile-nav.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .mobile-nav ul {
+            list-style: none;
+            text-align: center;
+        }
+
+        .mobile-nav li {
+            margin: 2rem 0;
+        }
+
+        .mobile-nav a {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        /* Hamburger animation to 'X' */
+        .hamburger-menu.open span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        .hamburger-menu.open span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger-menu.open span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 80px; /* Offset for navbar */
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 4rem;
+            width: 100%;
+        }
+
+        .hero-text {
+            text-align: left;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeIn 1s ease 0.8s forwards;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+        
+        /* Gradient Text Style */
+        .gradient-text {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero-text .greeting {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .hero-text p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            max-width: 500px;
+        }
+
+        .hero-image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeIn 1s ease 0.5s forwards;
+        }
+
+        .hero-image {
+            width: 300px;
+            height: 300px;
+            object-fit: cover;
+            box-shadow: 0 10px 40px var(--shadow);
+            border-radius: 50%; /* Reverted back to a circle */
+        }
+
+        /* General Section Styling & Scroll Animations */
+        .section {
+            padding: 6rem 2rem;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            background-color: var(--card-bg);
+            backdrop-filter: blur(16px);
+            margin-bottom: 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px 0 var(--shadow);
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            font-weight: 700;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 3px;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        /* About Me Section */
+        #about p {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        /* Journey (Timeline) Section */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            background-color: var(--pale-blue);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -1px;
+        }
+
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            right: -8px;
+            background-color: var(--bg-color);
+            border: 3px solid var(--primary-color);
+            top: 25px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        
+        .timeline-item:nth-child(even)::after {
+            left: -8px;
+        }
+
+        .timeline-content {
+            padding: 20px 30px;
+            background-color: var(--card-bg);
+            position: relative;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px var(--glow-color);
+        }
+        
+        .timeline-item:nth-child(even) .timeline-content {
+            text-align: right;
+        }
+        
+        .timeline-content h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .timeline-content .date {
+            font-size: 0.9rem;
+            font-style: italic;
+            margin-bottom: 0.5rem;
+            display: block;
+            color: #0077B6;
+        }
+
+        /* Services & Skills Section */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 25px var(--glow-color);
+        }
+
+        .info-card i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .info-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        /* Testimonials Section */
+        .testimonial-card {
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            border-left: 4px solid var(--primary-color);
+            box-shadow: 0 4px 20px var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px var(--glow-color);
+        }
+
+        .testimonial-card p.quote {
+            font-size: 1.1rem;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        .testimonial-card p.author {
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        /* Contact Section */
+        #contact .container {
+            text-align: center;
+        }
+
+        .contact-form {
+            max-width: 600px;
+            margin: 2rem auto 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .contact-form input, .contact-form textarea {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+        }
+
+        .contact-form input:focus, .contact-form textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.2);
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--text-color));
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 119, 182, 0.2);
+            text-decoration: none; /* Ensure no underline */
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 119, 182, 0.3);
+        }
+
+        /* Footer */
+        .footer {
+            padding: 3rem 0;
+            text-align: center;
+            background-color: transparent;
+            margin-top: 4rem;
+        }
+        
+        /* Keyframe Animations */
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 900px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .hero-text {
+                text-align: center;
+                order: 2;
+            }
+            .hero-image-container {
+                order: 1;
+                margin-bottom: 2rem;
+            }
+            .hero-text h1 {
+                font-size: 2.8rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .hamburger-menu {
+                display: flex;
+            }
+            .navbar {
+                max-width: calc(100% - 2rem);
+            }
+            .timeline::after {
+                left: 20px;
+            }
+            .timeline-item {
+                width: 100%;
+                padding-left: 50px;
+                padding-right: 10px;
+            }
+            .timeline-item:nth-child(even) {
+                left: 0;
+            }
+            .timeline-item::after {
+                left: 12px;
+            }
+            .timeline-item:nth-child(even) .timeline-content {
+                text-align: left;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-text h1 {
+                font-size: 2.2rem;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+            .section {
+                padding: 4rem 1.5rem;
+            }
+        }
+
+    </style>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+    
+    <!-- Custom Cursor -->
+    <div class="custom-cursor">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M7.3,20.06,2.45,3.11A1.3,1.3,0,0,1,4.2,1.82l17.2,6.59a1.3,1.3,0,0,1,0,2.43L10.5,14.2,7.3,20.06Z"></path>
+        </svg>
+    </div>
+
+    <!-- Animated Background Canvas -->
+    <canvas id="background-animation"></canvas>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar" id="navbar">
+        <a href="#" class="nav-logo">Shafin.</a>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#journey">Journey</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <button class="hamburger-menu" id="hamburger-menu" aria-label="Open Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </nav>
+    
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobile-nav">
+        <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#journey">Journey</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </div>
+
+    <!-- Hero Section -->
+    <header class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <span class="greeting">Hello, I'm Shafin.</span>
+                    <h1><span class="gradient-text">Web Developer & Webflow Specialist</span></h1>
+                    <p>I design and build modern, responsive, and beautiful websites that help businesses grow and stand out.</p>
+                    <a href="#contact" class="btn">Get In Touch</a>
+                </div>
+                <div class="hero-image-container">
+                    <!-- IMPORTANT: Replace this placeholder link with a direct link to your image (e.g., one ending in .jpg or .png) -->
+                    <img src="images/shafin-profile.jpg" alt="A photo of Shafin" class="hero-image">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- About Me Section -->
+        <section id="about" class="section">
+            <h2 class="section-title">About Me</h2>
+            <p>
+                I'm a passionate Computer Science and Engineering student at the American International University-Bangladesh (AIUB). My journey in tech is driven by a deep fascination with creating beautiful, functional, and user-centric websites. I blend technical logic with modern design principles to build digital solutions that are not only powerful but also a pleasure to use.
+            </p>
+        </section>
+
+        <!-- Journey Section -->
+        <section id="journey" class="section">
+            <h2 class="section-title">My Journey</h2>
+            <div class="timeline">
+                <!-- Timeline Item 1 -->
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>Began CSE at AIUB</h3>
+                        <span class="date">2023 - Present</span>
+                        <p>Embarked on my official academic journey in computer science, laying the foundational knowledge for my career in technology.</p>
+                    </div>
+                </div>
+                <!-- Timeline Item 2 -->
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>Discovered Webflow</h3>
+                        <span class="date">Mid-2024</span>
+                        <p>Fell in love with the power of visual development and its ability to bring complex designs to life with precision and flair.</p>
+                    </div>
+                </div>
+                <!-- Timeline Item 3 -->
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>First Freelance Project</h3>
+                        <span class="date">Early 2023</span>
+                        <p>Successfully designed and launched a portfolio site for a local artist, solidifying my skills in a real-world scenario.</p>
+                    </div>
+                </div>
+                <!-- Timeline Item 4 -->
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>Interned at Tech Innovators Inc.</h3>
+                        <span class="date">Summer 2024</span>
+                        <p>Gained invaluable experience as a Junior Web Developer, contributing to client projects and collaborating with a professional team.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Services Section -->
+        <section id="services" class="section">
+            <h2 class="section-title">What I Offer</h2>
+            <div class="grid-container">
+                <div class="info-card">
+                    <i class="fa-solid fa-pen-ruler"></i>
+                    <h3>Custom Web Design</h3>
+                    <p>Crafting unique, tailor-made designs from scratch that reflect your brand's identity and goals.</p>
+                </div>
+                <div class="info-card">
+                    <i class="fa-brands fa-webflow"></i>
+                    <h3>Webflow Development</h3>
+                    <p>Building responsive, high-performance websites in Webflow with CMS integration and advanced animations.</p>
+                </div>
+                <div class="info-card">
+                    <i class="fa-solid fa-mobile-screen-button"></i>
+                    <h3>Responsive Development</h3>
+                    <p>Ensuring your website looks and functions perfectly on all devices, from desktops to smartphones.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="section">
+            <h2 class="section-title">My Expertise</h2>
+            <div class="grid-container">
+                <div class="info-card">
+                    <i class="fa-solid fa-code"></i>
+                    <h3>Web Development</h3>
+                    <p>I build responsive and dynamic websites using HTML, CSS, JavaScript, and modern frameworks like React.</p>
+                </div>
+                <div class="info-card">
+                    <i class="fa-brands fa-figma"></i>
+                    <h3>Webflow</h3>
+                    <p>I specialize in using Webflow to create pixel-perfect, visually stunning websites with intricate animations and CMS capabilities.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials" class="section">
+            <h2 class="section-title">What Clients Say</h2>
+            <div class="testimonial-card">
+                <p class="quote">"Shafin transformed our vision into a digital reality with incredible attention to detail and a keen eye for design. The entire process was seamless and professional."</p>
+                <p class="author">- Jane Doe, Founder of Luxe Real Estate</p>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <h2 class="section-title">Get In Touch</h2>
+            <p style="text-align: center; max-width: 600px; margin: 0 auto 2rem;">I'm currently available for freelance projects and collaborations. <br> Let's create something remarkable together.</p>
+            <form class="contact-form" action="#" method="POST">
+                <input type="text" name="name" placeholder="Your Name" required>
+                <input type="email" name="email" placeholder="Your Email" required>
+                <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+                <button type="submit" class="btn">Send Message</button>
+            </form>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Shafin. All Rights Reserved. Crafted with care.</p>
+        </div>
+    </footer>
+
+    <script>
+        // JavaScript Starts Here
+
+        // 1. Navbar Scroll Effect
+        const navbar = document.getElementById('navbar');
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', () => {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                // Downscroll
+                navbar.style.top = '-100px';
+            } else {
+                // Upscroll
+                navbar.style.top = '1.5rem';
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; 
+        });
+
+        // 2. Seamless Scroll Animations for Sections
+        const sections = document.querySelectorAll('.section');
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+        const sectionObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        sections.forEach(section => {
+            sectionObserver.observe(section);
+        });
+
+        // 3. Animated Network Background
+        const canvas = document.getElementById('background-animation');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray;
+
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x;
+                this.y = y;
+                this.directionX = directionX;
+                this.directionY = directionY;
+                this.size = size;
+                this.color = color;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+            update() {
+                if (this.x > canvas.width || this.x < 0) {
+                    this.directionX = -this.directionX;
+                }
+                if (this.y > canvas.height || this.y < 0) {
+                    this.directionY = -this.directionY;
+                }
+                this.x += this.directionX;
+                this.y += this.directionY;
+                this.draw();
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 9000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = (Math.random() * 2) + 1;
+                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                let directionX = (Math.random() * .4) - .2;
+                let directionY = (Math.random() * .4) - .2;
+                let color = 'rgba(0, 119, 182, 0.15)'; // Subtle medium blue
+
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+            }
+        }
+        
+        function connect() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x))
+                                 + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                    if (distance < (canvas.width/7) * (canvas.height/7)) {
+                        opacityValue = 1 - (distance/20000);
+                        ctx.strokeStyle = `rgba(0, 119, 182, ${opacityValue * 0.2})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
+            connect();
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = innerWidth;
+            canvas.height = innerHeight;
+            init();
+        });
+
+        init();
+        animate();
+
+        // 4. Custom Cursor Logic
+        const cursor = document.querySelector('.custom-cursor');
+        const interactiveElements = document.querySelectorAll('a, button, .info-card, .timeline-content');
+
+        window.addEventListener('mousemove', e => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.classList.add('hover');
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('hover');
+            });
+        });
+
+        // 5. Hamburger Menu Logic
+        const hamburger = document.getElementById('hamburger-menu');
+        const mobileNav = document.getElementById('mobile-nav');
+        const mobileNavLinks = mobileNav.querySelectorAll('a');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('open');
+            mobileNav.classList.toggle('open');
+            document.body.classList.toggle('mobile-nav-open');
+        });
+        
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('open');
+                mobileNav.classList.remove('open');
+                document.body.classList.remove('mobile-nav-open');
+            });
+        });
+
+    </script>
+</body>
+</html>
